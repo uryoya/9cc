@@ -64,7 +64,7 @@ void tokenize(char *p) {
       continue;
     }
 
-    if (*p == '+' || *p == '-' || *p == '*') {
+    if (*p == '+' || *p == '-' || *p == '*' || *p == '(' || *p == ')') {
       tokens[i].ty = *p;
       tokens[i].input = p;
       i++;
@@ -129,15 +129,15 @@ Node *mul() {
 Node *term() {
   if (tokens[pos].ty == TK_NUM)
     return new_node_num(tokens[pos++].val);
-  // if (tokens[pos].ty == '(') {
-  //   pos++;
-  //   Node *node = expr();
-  //   if (tokens[pos].ty != ')')
-  //     errorf("開きカッコに対応する閉じカッコがありません: %s",
-  //         tokens[pos].input);
-  //   pos++;
-  //   return node;
-  // }
+  if (tokens[pos].ty == '(') {
+    pos++;
+    Node *node = expr();
+    if (tokens[pos].ty != ')')
+      errorf("開きカッコに対応する閉じカッコがありません: %s",
+          tokens[pos].input);
+    pos++;
+    return node;
+  }
   errorf("数値でも開きカッコでもないトークンです: %s",
       tokens[pos].input);
 }
