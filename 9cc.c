@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
 
 // トークンの型を表す型
 enum {
@@ -87,6 +88,15 @@ void tokenize(char *p) {
   tokens[i].input = p;
 }
 
+// エラーを報告するための関数
+void errorf(const char *fmt, ...) {
+  va_list ap;
+  va_start(ap, fmt);
+  vfprintf(stderr, fmt, ap);
+  va_end(ap);
+  exit(1);
+}
+
 // 現在着目しているtokensのインデクス
 int pos = 0;
 
@@ -123,12 +133,12 @@ Node *term() {
     pos++;
     Node *node = expr();
     if (tokens[pos].ty != ')')
-      error("開きカッコに対応する閉じカッコがありません: %s",
+      errorf("開きカッコに対応する閉じカッコがありません: %s",
           tokens[pos].input);
     pos++;
     return node;
   }
-  error("数値でも開きカッコでもないトークンです: %s",
+  errorf("数値でも開きカッコでもないトークンです: %s",
       tokens[pos].input);
 }
 
@@ -162,12 +172,6 @@ void gen(Node *node) {
   }
 
   printf("    push rax\n");
-}
-
-// エラーを報告するための関数
-void error(int i) {
-  fprintf(stderr, "予期せぬトークンです: %s\n", tokens[i].input);
-  exit(1);
 }
 
 int main(int argc, char **argv) {
