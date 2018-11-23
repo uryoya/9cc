@@ -132,6 +132,38 @@ Node *term() {
       tokens[pos].input);
 }
 
+// スタックの生成
+void gen(Node *node) {
+  if (node->ty == ND_NUM) {
+    printf("    push %d\n", node->val);
+    return;
+  }
+
+  gen(node->lhs);
+  gen(node->rhs);
+
+  printf("    pop rdi\n");
+  printf("    pop rax\n");
+
+  switch (node->ty) {
+  case '+':
+    printf("    add rax, rdi\n");
+    break;
+  case '-':
+    printf("    sub rax, rdi\n");
+    break;
+  case '*':
+    printf("    mul rdi\n");
+    break;
+  case '/':
+    printf("    mov rdx, 0\n");
+    printf("    div rdi\n");
+    break;
+  }
+
+  printf("    push rax\n");
+}
+
 // エラーを報告するための関数
 void error(int i) {
   fprintf(stderr, "予期せぬトークンです: %s\n", tokens[i].input);
