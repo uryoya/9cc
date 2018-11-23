@@ -178,43 +178,19 @@ int main(int argc, char **argv) {
 
   // トークナイズする
   tokenize(argv[1]);
+  Node* node = expr();
 
   // アセンブリの前半部分を出力
   printf(".intel_syntax noprefix\n");
   printf(".global main\n");
   printf("main:\n");
 
-  // 式の最初は数でなければならないので、それをチェックして
-  // 最初のmov命令を出力
-  if (tokens[0].ty != TK_NUM)
-    error(0);
-  printf("    mov rax, %d\n", tokens[0].val);
+  // 抽象構文木を下りながらコード生成
+  gen(node);
 
-  // `+ <数>`あるいは`- <数>`というトークンの並びを消費しつつ
-  // アセンブリを出力
-  int i = 1;
-  while (tokens[i].ty != TK_EOF) {
-    if (tokens[i].ty == '+') {
-      i++;
-      if (tokens[i].ty != TK_NUM)
-        error(i);
-      printf("    add rax, %ld\n", tokens[i].val);
-      i++;
-      continue;
-    }
-
-    if (tokens[i].ty == '-') {
-      i++;
-      if (tokens[i].ty != TK_NUM)
-        error(i);
-      printf("    sub rax, %ld\n", tokens[i].val);
-      i++;
-      continue;
-    }
-
-    error(i);
-  }
-
+  // スタックトップに式全体の値が残っているはずなので
+  // それをRAXにロードして関数からの返り値とする
+  printf("    pop rax\n");
   printf("    ret\n");
   return 0;
 }
