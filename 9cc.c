@@ -119,25 +119,25 @@ Node *mul() {
     pos++;
     return new_node('*', lhs, mul());
   }
-  if (tokens[pos].ty == '/') {
-    pos++;
-    return new_node('/', lhs, mul());
-  }
+  // if (tokens[pos].ty == '/') {
+  //   pos++;
+  //   return new_node('/', lhs, mul());
+  // }
   return lhs;
 }
 
 Node *term() {
   if (tokens[pos].ty == TK_NUM)
     return new_node_num(tokens[pos++].val);
-  if (tokens[pos].ty == '(') {
-    pos++;
-    Node *node = expr();
-    if (tokens[pos].ty != ')')
-      errorf("開きカッコに対応する閉じカッコがありません: %s",
-          tokens[pos].input);
-    pos++;
-    return node;
-  }
+  // if (tokens[pos].ty == '(') {
+  //   pos++;
+  //   Node *node = expr();
+  //   if (tokens[pos].ty != ')')
+  //     errorf("開きカッコに対応する閉じカッコがありません: %s",
+  //         tokens[pos].input);
+  //   pos++;
+  //   return node;
+  // }
   errorf("数値でも開きカッコでもないトークンです: %s",
       tokens[pos].input);
 }
