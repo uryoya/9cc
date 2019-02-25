@@ -29,6 +29,7 @@ void vec_push(Vector *vec, void *elem) {
 // トークンの型を表す型
 enum {
   TK_NUM = 256, // 整数トークン
+  TK_IDENT,     // 識別子
   TK_EOF,       // 入力の終わりを表すトークン
 };
 
