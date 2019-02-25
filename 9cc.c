@@ -103,6 +103,14 @@ void tokenize(char *p) {
       continue;
     }
 
+    if ('a' <= *p && *p <= 'z') {
+      tokens[i].ty = TK_IDENT;
+      tokens[i].input = p;
+      i++;
+      p++;
+      continue;
+    }
+
     fprintf(stderr, "トークナイズできません: %s\n", p);
     exit(1);
   }
